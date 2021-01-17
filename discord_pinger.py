@@ -1,22 +1,29 @@
+#!/usr/bin/python
 import requests
 import os
+import logging
+
+logging.basicConfig(filename="/var/log/pingme/pingme.log",
+                    format='%(asctime)s %(levelname)s: %(message)s',
+                    level=logging.DEBUG)
+
 
 
 
 def sendPing(msg):
-    # make secret
     urls = getHookUrl()
-
-    print(f"Sending ping '{msg}'")
+    for url in urls:
+        sendMessage(url, msg)
 
 
 def sendMessage(url, msg):
+    logging.info(f"Sending ping '{msg}'")
     headers = {"content-type": "application/json"}
     content = {"content": msg}
     resp = requests.post(url, headers=headers, json=content) 
     if resp.ok:
         print("Success")
-        print(resp.text)
+        logging.info(resp.text)
     else:
         print("Fail")
 
