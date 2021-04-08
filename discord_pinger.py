@@ -8,35 +8,38 @@ logging.basicConfig(filename="/var/log/pingme/pingme.log",
                     level=logging.DEBUG)
 
 
-
-
-def sendPing(msg):
-    urls = getHookUrl()
+def send_ping(msg):
+    urls = __get_hook_urls()
     for url in urls:
-        sendMessage(url, msg)
+        __send_message(url, msg)
 
 
-def sendMessage(url, msg):
+def __send_message(url, msg):
     logging.info(f"Sending ping '{msg}'")
     headers = {"content-type": "application/json"}
     content = {"content": msg}
     resp = requests.post(url, headers=headers, json=content) 
     if resp.ok:
-        print("Success")
         logging.info(resp.text)
     else:
-        print("Fail")
+        logging.error(f"Failed to send message: {resp.text}")
 
 
-def getHookUrl():
-    dpDir = os.path.dirname(__file__)
+def __get_hook_urls():
+    """ Parse hookurls.txt and return list of urls """
+    exe_dir = os.path.dirname(__file__)
+    hookurls_path = os.path.join(exe_dir, "hookurls.txt")
+
+    if not os.path.exists(hookurls_path):
+        raise FileNotFoundError(f"hookurls.txt not found at '{hookurls_path}'")
+
     urls = list()
-    with open(os.path.join(dpDir, "hookurl.txt")) as f:
+    with open(hookurls_path) as f:
         for line in f.readlines():
             urls.append(line[:-1])
     return urls
 
 
 if __name__ == "__main__":
-    sendPing("hello");
+    send_ping("hello")
 
