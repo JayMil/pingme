@@ -4,9 +4,14 @@ Little python command line app to send messages to discord.
 Currently, only linux is supported.
 
 ### Prerequisites
+* Make
 * Python 3
 * Setup Discord Integration
-* (optional) Make
+
+## Setup
+Run `make init`
+
+This will install python dependencies and create the log directory.
 
 ## Usage
 All usages are executed from the project root directory.
